@@ -39,15 +39,15 @@ type restRequester interface {
 	Get() *rest.Request
 }
 
-func ForResource(
+func ClientForResource(
 	c restRequester, res string, ns string, fsel fields.Selector) Client {
 	return NewClient(
-		makeResourceListFn(c, res, ns, fsel),
-		makeResourceWatchFn(c, res, ns, fsel),
+		ListFnForResource(c, res, ns, fsel),
+		WatchFnForResource(c, res, ns, fsel),
 	)
 }
 
-func makeResourceListFn(
+func ListFnForResource(
 	c restRequester, res string, ns string, fsel fields.Selector) ListFn {
 	return func(ctx context.Context, opts api.ListOptions) (runtime.Object, error) {
 		return c.Get().
@@ -61,7 +61,7 @@ func makeResourceListFn(
 	}
 }
 
-func makeResourceWatchFn(
+func WatchFnForResource(
 	c restRequester, res string, ns string, fsel fields.Selector) WatchFn {
 
 	return func(ctx context.Context, opts api.ListOptions) (watch.Interface, error) {
